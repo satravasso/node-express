@@ -12,6 +12,7 @@ model user {
   cpf   String? @db.VarChar(11)
   nome  String? @db.VarChar(50)
   senha String? @db.VarChar(20)
+  login String? @db.VarChar(50)
 }
 
 model pizza {

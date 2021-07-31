@@ -1,7 +1,7 @@
 import express from 'express';
 import { createPizza, deletePizza, getPizzaById, getPizzas, getTotalPizza, updatePizza } from '../services/pizza';
 
-import { getUsers, getUserById, createUser, updateUser, deteleUser } from '../services/usuarios';
+import { getUsers, getUserById, createUser, updateUser, deteleUser } from '../services/user';
 
 export const routerUser = express.Router();
 
