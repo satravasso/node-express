@@ -7,8 +7,8 @@
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "yarn build && node dist/index.js",
-    "prisma:dbpull" : "yarn prisma db pull",
-    "prisma:dbpush" : "yarn prisma db push"
+    "prisma:pull" : "yarn prisma db pull",
+    "prisma:push" : "yarn prisma db push"
   },
   "author": "Sabrina Travasso Ferreira <sabrinatravasso@hotmail.com>",
   "license": "ISC",

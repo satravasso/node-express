@@ -21,3 +21,11 @@ model pizza {
   size   String? @db.VarChar(50)
   value  Int?
 }
+
+model product {
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(50)
+  value    Float?  @db.Float
+  quantity Int?
+  category String? @db.VarChar(50)
+}
