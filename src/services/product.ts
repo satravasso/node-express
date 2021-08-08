@@ -58,8 +58,6 @@ export async function sellProducts(req: Request, res: Response) {
       where: { id: item.id },
     });
 
-    console.log(prod_qnt?.quantity);
-    console.log(item.quantityItem);
     const qntFinal = (prod_qnt?.quantity || 0) - item.quantityItem;
 
     return await prisma.product.update({

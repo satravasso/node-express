@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { routerUser, routerPizza, routerProduct } from './router/route';
+import { routerUser, routerPizza, routerProduct } from './router/routes';
 
 const defaultPort = 3000;
 const app = express();
