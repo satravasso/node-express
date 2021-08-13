@@ -16,7 +16,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/services/order_restaurant/order.ts"  ],
   "exclude": [
     "node_modules"
   ]

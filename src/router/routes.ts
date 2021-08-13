@@ -1,4 +1,12 @@
 import express from 'express';
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+} from '../services/order_restaurant/category';
+import { createMenu, deleteMenu, getMenuById, getMenus, updateMenu } from '../services/order_restaurant/menu';
 import { createPizza, deletePizza, getPizzaById, getPizzas, getTotalPizza, updatePizza } from '../services/pizza';
 import { createProduct, deleteProduct, getAllProducts, sellProducts, updateProduct } from '../services/product';
 
@@ -7,6 +15,8 @@ import { getUsers, getUserById, createUser, updateUser, deteleUser } from '../se
 const routerUser = express.Router();
 const routerPizza = express.Router();
 const routerProduct = express.Router();
+const routerCategory = express.Router();
+const routerMenu = express.Router();
 
 function createRout() {}
 
@@ -29,4 +39,16 @@ routerProduct.put('/:id', updateProduct);
 routerProduct.delete('/:id', deleteProduct);
 routerProduct.post('/sellProducts', sellProducts);
 
-export { routerUser, routerPizza, routerProduct };
+routerCategory.post('/', createCategory);
+routerCategory.get('/', getCategories);
+routerCategory.get('/:id', getCategoryById);
+routerCategory.put('/:id', updateCategory);
+routerCategory.delete('/:id', deleteCategory);
+
+routerMenu.post('/', createMenu);
+routerMenu.get('/', getMenus);
+routerMenu.get('/:id', getMenuById);
+routerMenu.put('/:id', updateMenu);
+routerMenu.delete('/:id', deleteMenu);
+
+export { routerUser, routerPizza, routerProduct, routerCategory, routerMenu };

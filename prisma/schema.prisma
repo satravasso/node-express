@@ -29,3 +29,23 @@ model product {
   quantity Int?
   category String? @db.VarChar(50)
 }
+
+// projeto de pedidos genérico para restaurantes
+model cateogry {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(100) @unique
+}
+
+model menu {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(100)
+  price       Int
+  category_id Int
+}
+
+model order {
+  id         Int      @id @default(autoincrement())
+  order_json String   @db.LongText
+  date_start DateTime @db.Date
+  date_end   DateTime @db.Date
+}
