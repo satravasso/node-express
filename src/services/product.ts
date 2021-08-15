@@ -1,80 +1,99 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { product, PrismaClient } from '@prisma/client';
+import { HttpException } from '../middlewares/error';
 
 const prisma = new PrismaClient();
 
-export async function getAllProducts(req: Request, res: Response<product[]>) {
+export async function getAllProducts(req: Request, res: Response<product[]>, next: NextFunction) {
   const name = req.query.name as string;
   const category = req.query.category as string;
 
-  const allProducts: product[] = await prisma.product.findMany({
-    where: {
-      name: {
-        contains: name,
+  let allProducts;
+  try {
+    allProducts = await prisma.product.findMany({
+      where: {
+        name: {
+          contains: name,
+        },
+        category: category,
       },
-      category: category,
-    },
-  });
+    });
+  } catch (error) {
+    return next(new HttpException(500, error.message));
+  }
 
   res.status(200).json(allProducts);
 }
-export async function createProduct(req: Request, res: Response<product>) {
+export async function createProduct(req: Request, res: Response<product>, next: NextFunction) {
   const product = req.body;
 
-  await prisma.product.create({
-    data: product,
-  });
+  try {
+    await prisma.product.create({
+      data: product,
+    });
+  } catch (error) {
+    return next(new HttpException(500, error.message));
+  }
 
   return res.status(200).json(product);
 }
 
-export async function updateProduct(req: Request, res: Response<product>) {
+export async function updateProduct(req: Request, res: Response<product>, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   const product = req.body;
 
-  const updated = await prisma.product.update({
-    where: { id },
-    data: product,
-  });
+  let updated;
+  try {
+    updated = await prisma.product.update({
+      where: { id },
+      data: product,
+    });
+  } catch (error) {
+    return next(new HttpException(500, error.message));
+  }
 
   res.status(200).json(updated);
 }
 
-export async function deleteProduct(req: Request, res: Response) {
+export async function deleteProduct(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
 
-  const deleted = await prisma.product.delete({
-    where: { id },
-  });
+  let deleted;
+  try {
+    deleted = await prisma.product.delete({
+      where: { id },
+    });
+  } catch (error) {
+    return next(new HttpException(500, error.message));
+  }
 
   res.status(200).json(deleted);
 }
 
-export async function sellProducts(req: Request, res: Response) {
+export async function sellProducts(req: Request, res: Response, next: NextFunction) {
   const products = req.body;
 
   let updated = products.map(async (item: { id: number; quantityItem: number }) => {
-    const prod_qnt = await prisma.product.findUnique({
-      where: { id: item.id },
-    });
+    let prod_qnt;
+    try {
+      prod_qnt = await prisma.product.findUnique({
+        where: { id: item.id },
+      });
+    } catch (error) {
+      return next(new HttpException(500, error.message));
+    }
 
     const qntFinal = (prod_qnt?.quantity || 0) - item.quantityItem;
 
-    return await prisma.product.update({
-      where: { id: item.id },
-      data: { quantity: qntFinal },
-    });
+    try {
+      return await prisma.product.update({
+        where: { id: item.id },
+        data: { quantity: qntFinal },
+      });
+    } catch (error) {
+      return next(new HttpException(500, error.message));
+    }
   });
 
   res.status(200).json(updated);
-}
-
-export async function addProduct(req: Request, res: Response) {
-  const id = Number.parseInt(req.params.id);
-
-  const deleted = await prisma.product.delete({
-    where: { id },
-  });
-
-  res.status(200).json(deleted);
 }
