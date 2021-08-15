@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { menu, PrismaClient } from '@prisma/client';
+import { HttpException } from '../../middlewares/error';
 
 const prisma = new PrismaClient();
 
-export async function getMenus(req: Request, res: Response<menu[]>) {
+export async function getMenus(req: Request, res: Response<menu[]>, next: NextFunction) {
   const name = req.query.name as string;
   let allmenus;
   try {
@@ -15,13 +16,13 @@ export async function getMenus(req: Request, res: Response<menu[]>) {
       },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(allmenus);
 }
 
-export async function getMenuById(req: Request, res: Response) {
+export async function getMenuById(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   let menu;
   try {
@@ -31,13 +32,13 @@ export async function getMenuById(req: Request, res: Response) {
       },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(menu);
 }
 
-export async function createMenu(req: Request, res: Response<menu>) {
+export async function createMenu(req: Request, res: Response<menu>, next: NextFunction) {
   const menu = req.body;
   let createdMenu;
   try {
@@ -48,7 +49,7 @@ export async function createMenu(req: Request, res: Response<menu>) {
     if (error.code === 'P2002' || error.code === 'P2003') {
       return res.status(422).json(error.message);
     } else {
-      return res.status(500).json(error.message);
+      return next(new HttpException(500, error.message));
     }
   }
 
@@ -66,13 +67,13 @@ export async function updateMenu(req: Request, res: Response, next: NextFunction
       data: menu,
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(201).json(updated);
 }
 
-export async function deleteMenu(req: Request, res: Response) {
+export async function deleteMenu(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
 
   let deleted;
@@ -81,7 +82,7 @@ export async function deleteMenu(req: Request, res: Response) {
       where: { id },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
   return res.status(200).json(deleted);
 }

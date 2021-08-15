@@ -1,21 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 import { order, PrismaClient } from '@prisma/client';
+import { HttpException } from '../../middlewares/error';
 
 const prisma = new PrismaClient();
 
-export async function getOrders(req: Request, res: Response<order[]>) {
+export async function getOrders(req: Request, res: Response<order[]>, next: NextFunction) {
   const name = req.query.name as string;
   let allorders;
   try {
     allorders = await prisma.order.findMany();
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(allorders);
 }
 
-export async function getOrderById(req: Request, res: Response) {
+export async function getOrderById(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   let order;
   try {
@@ -25,13 +26,13 @@ export async function getOrderById(req: Request, res: Response) {
       },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(order);
 }
 
-export async function createOrder(req: Request, res: Response<order>) {
+export async function createOrder(req: Request, res: Response<order>, next: NextFunction) {
   const order = req.body;
   let createdorder;
   try {
@@ -40,9 +41,9 @@ export async function createOrder(req: Request, res: Response<order>) {
     });
   } catch (error) {
     if (error.code === 'P2002' || error.code === 'P2003') {
-      return res.status(422).json(error.message);
+      return next(new HttpException(422, error.message));
     } else {
-      return res.status(500).json(error.message);
+      return next(new HttpException(500, error.message));
     }
   }
 
@@ -60,7 +61,7 @@ export async function updateorder(req: Request, res: Response, next: NextFunctio
       data: order,
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(201).json(updated);

@@ -1,12 +1,13 @@
 import e, { Errback, NextFunction, Request, response, Response } from 'express';
 import { cateogry, Prisma, PrismaClient } from '@prisma/client';
 import { ErrorCallback } from 'typescript';
+import { HttpException } from '../../middlewares/error';
 
 const prisma = new PrismaClient({
   errorFormat: 'pretty',
 });
 
-export async function getCategories(req: Request, res: Response<cateogry[]>) {
+export async function getCategories(req: Request, res: Response<cateogry[]>, next: NextFunction) {
   const name = req.query.name as string;
 
   let allcateogrys;
@@ -19,13 +20,13 @@ export async function getCategories(req: Request, res: Response<cateogry[]>) {
       },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(allcateogrys);
 }
 
-export async function getCategoryById(req: Request, res: Response) {
+export async function getCategoryById(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   let category;
   try {
@@ -35,7 +36,7 @@ export async function getCategoryById(req: Request, res: Response) {
       },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(200).json(category);
@@ -52,14 +53,14 @@ export async function createCategory(req: Request, res: Response, next: NextFunc
     if (error.code === 'P2002' || error.code === 'P2003') {
       return res.status(422).json(error.message);
     } else {
-      return res.status(500).json(error.message);
+      return next(new HttpException(500, error.message));
     }
   }
 
   return res.status(201).json(createdCategory);
 }
 
-export async function updateCategory(req: Request, res: Response<cateogry>) {
+export async function updateCategory(req: Request, res: Response<cateogry>, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   const category = req.body;
 
@@ -70,13 +71,13 @@ export async function updateCategory(req: Request, res: Response<cateogry>) {
       data: category,
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
 
   return res.status(201).json(updated);
 }
 
-export async function deleteCategory(req: Request, res: Response) {
+export async function deleteCategory(req: Request, res: Response, next: NextFunction) {
   const id = Number.parseInt(req.params.id);
   let deleted;
   try {
@@ -84,7 +85,7 @@ export async function deleteCategory(req: Request, res: Response) {
       where: { id },
     });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return next(new HttpException(500, error.message));
   }
   return res.status(200).json(deleted);
 }
