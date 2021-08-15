@@ -30,10 +30,9 @@ model product {
   category String? @db.VarChar(50)
 }
 
-// projeto de pedidos genérico para restaurantes
 model cateogry {
   id   Int    @id @default(autoincrement())
-  name String @db.VarChar(100) @unique
+  name String @unique @db.VarChar(100)
 }
 
 model menu {
