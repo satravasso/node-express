@@ -43,8 +43,8 @@ model menu {
 }
 
 model order {
-  id         Int      @id @default(autoincrement())
-  order_json String   @db.LongText
-  date_start DateTime @db.Date
-  date_end   DateTime @db.Date
+  id         Int       @id @default(autoincrement())
+  order_json String    @db.LongText
+  date_start DateTime  @default(now()) @db.Date
+  date_end   DateTime? @db.Date
 }
