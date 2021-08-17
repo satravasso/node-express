@@ -10,7 +10,7 @@
     "prisma:pull": "yarn prisma db pull",
     "prisma:push": "yarn prisma db push"
   },
-  "author": "Sabrina Travasso Ferreira <sabrinatravasso@hotmail.com>",
+  "author": "Sabrina Travasso Ferreira <https://github.com/SabrinaTravasso> & Rafael Otávio Giro <https://github.com/RafaelGiro>",
   "license": "ISC",
   "devDependencies": {
     "@types/babel__core": "^7.1.15",
